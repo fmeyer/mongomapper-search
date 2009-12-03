@@ -4,6 +4,7 @@ require 'mongomapper-solr'
 require 'spec'
 require 'spec/autorun'
 
+
 Spec::Runner.configure do |config|
-  
+  MongoMapper.database = "dummydb"
 end

@@ -12,6 +12,11 @@ begin
     gem.authors = ["Fernando Meyer"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    
+    gem.add_dependency "activesupport", "2.3.5"
+    gem.add_dependency "mongo_mapper", "0.5.8"
+    gem.add_dependency "rsolr", "0.9.6"
+
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
