@@ -1,41 +1,44 @@
 require 'rubygems'
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "mongomapper-solr"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "fmcamargo@gmail.com"
-    gem.homepage = "http://github.com/fmeyer/mongomapper-solr"
-    gem.authors = ["Fernando Meyer"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-    
-    gem.add_dependency "activesupport", "2.3.5"
-    gem.add_dependency "mongo_mapper", "0.5.8"
-    gem.add_dependency "rsolr", "0.9.6"
+namespace :gem do
+  begin
+    require 'jeweler'
+    @jeweler_tasks = Jeweler::Tasks.new do |gem|
+      gem.name = "mongomapper-search"
+      gem.summary = %Q{Easily integreate mongo mapper with enterprise search like solr}
+      gem.description = %Q{Easily integreate mongo mapper with enterprise search like solr}
+      gem.email = "fmcamargo@gmail.com"
+      gem.homepage = "http://github.com/fmeyer/mongomapper-search"
+      gem.authors = ["Fernando Meyer"]
+      gem.add_development_dependency "rspec", ">= 1.2.9"
+      # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 
+      gem.add_dependency "mongo_mapper", "0.5.8"
+      gem.add_dependency "rsolr", "0.9.6"
+
+      # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    end
+
+  rescue LoadError
+    puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
   end
-  Jeweler::GemcutterTasks.new
+end
+
+begin
+  require 'spec/rake/spectask'
+  Spec::Rake::SpecTask.new do |spec|
+    spec.libs << 'lib' << 'spec'
+    spec.pattern = 'spec/**/*_spec.rb'
+    spec.rcov = true
+    spec.rcov_dir = 'doc/coverage'
+    spec.rcov_opts = %w{--text-summary --failure-threshold 100 --exclude spec/*,gems/*,/usr/lib/ruby/* }
+  end
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+  task :spec do
+    abort "rSpec is not available. In order to run specs, you must: sudo gem install rspec"
+  end
 end
-
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-end
-
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
-
-task :spec => :check_dependencies
 
 begin
   require 'reek/rake_task'

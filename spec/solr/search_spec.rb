@@ -1,10 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Search::Document do
-
+describe Search::SolrDocument do
   class Dummy
     include MongoMapper::Document
-    include Search::Document
+    include Search::SolrDocument
+    
     key :field_1, String
     key :field_2, String, :fulltext => true
     key :field_3, String, :fulltext => true
@@ -15,6 +15,8 @@ describe Search::Document do
     Search.connection = mock('solr')
     Search.connection.stub!(:add)
     Search.connection.stub!(:commit)
+    
+    Dummy.connection Mongo::Connection.new
     Dummy.stub!(:find).with(anything()).and_return(@dummy)
   end
 
@@ -44,5 +46,4 @@ describe Search::Document do
 
     dummies = Dummy.search('abc')
   end
-
 end
