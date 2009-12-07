@@ -2,11 +2,20 @@
 
 module Search::SolrDocument 
   module ClassMethods
-    def search(query, opts = {})
-      opts.reverse_merge!(:limit => 20, :offset => 0)
-      resp = Search.connection.select(:q => query, :rows  => opts[:limit], :start => opts[:offset], :qt => :dismax, :fl => '*,score')['response']
-      return resp['docs'].map{|doc| find(doc['id'])}, resp['numFound']
+    def search(query, page = 1, opts = {})
+      WillPaginate::Collection.create(page, 20) do |pager|
+        result,count = search_engine_query(query, opts)
+        pager.replace(result)
+        pager.total_entries = count
+      end
     end
+    
+    protected
+    def search_engine_query(query, opts = {})
+      opts.reverse_merge!(:limit => 20, :offset => 0)      
+      resp = Search.connection.select(:q => query, :rows  => opts[:limit], :start => opts[:offset], :qt => :dismax, :fl => '*,score')['response']
+      return resp['docs'].map{|doc| find(doc['id'])}, resp['numFound']      
+    end    
   end
 
   module InstanceMethods
